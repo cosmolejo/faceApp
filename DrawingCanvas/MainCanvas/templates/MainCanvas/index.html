@@ -1,0 +1,173 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="{% static 'MainCanvas/javascript/draw.js' %}"></script>
+  <title>Face Generator</title>
+
+  <style type="text/css">
+    .tg {
+      border: none;
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .tg td {
+      border-style: solid;
+      border-width: 0px;
+      overflow: hidden;
+      padding: 10px 5px;
+      word-break: normal;
+    }
+
+    .tg th {
+      border-style: solid;
+      border-width: 0px;
+      overflow: hidden;
+      padding: 10px 5px;
+      word-break: normal;
+    }
+
+    .tg .tg-wp8o {
+      border-color: #000000;
+      text-align: center;
+      vertical-align: top
+    }
+  </style>
+</head>
+
+<body background="{% static 'MainCanvas/images/udea.png' %}" style="background-size: 30% 50%; background-repeat:no-repeat;
+    background-position: center center;">
+
+  <div id="withoutCanvas">
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+      <a class="navbar-brand" style="color:white" href="{% url 'index' %}"><strong>Drawing Canvas</strong></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-warning" href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a>
+          </li>
+          </li>
+          <li class="nav-item ">
+            <a class="nav-link disabled text-warning" href="#" tabindex="-1" aria-disabled="true">Face Generator</a>
+          </li>
+          <li class="nav-item">
+            <button id="saveDrawingNavbar" class="btn btn-outline-warning my-2 my-sm-0" type="button">Save
+              Drawing</button>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" action="{% url 'loadDrawing' drawingID=2 %}" method="post" id="loadForm"
+          onsubmit="return modifyLoadFormAction()">
+          {% csrf_token %}
+          <input class="form-control mr-sm-2" id="loadID" type="number" min="0" placeholder="Enter Drawing ID"
+            aria-label="Search">
+          <button id="loadSearch" class="btn btn-outline-warning my-2 my-sm-0" type="submit">Load Drawing</button>
+        </form>
+      </div>
+    </nav>
+
+    <div id="thicknessAndColorAndEraserBar"></div>
+
+    <div>
+      <div class="input-group" style="margin-right:5%;">
+        <button class="btn btn-warning my-2 my-sm-0 disabled" type="button">Color Hex Value(Optional)</button>
+        <input class="form-control mr-sm-2" id="colorHexValue" type="text" placeholder="Enter Color Hex Value"
+          aria-label="Search">
+      </div>
+    </div>
+    <div id="buttonBar"></div>
+
+    <form id="saveDrawing" action="{% url 'saveDrawing' %}" method="post" hidden onsubmit="return submitDrawing()">
+      {% csrf_token %}
+      <input id="JSONData" type="text" name="JSONData" />
+      <button id="save" type="submit" class="btn btn-warning btn-lg"></button>
+    </form>
+
+    <form id="exec_model" action="{% url 'exec_model' %}" method="post" hidden onsubmit="return submitModel()">
+      {% csrf_token %}
+      <input id="JSONData" type="text" name="JSONData" />
+      <button id="model" type="submit" class="btn btn-warning btn-lg"></button>
+    </form>
+
+    {% if message %}
+    <div style="text-align:center;margin:0 auto;" class="alert alert-warning" role="alert">
+      {{ message }}
+    </div>
+    {% endif %}
+
+    {% if loadIntoJavascript %}
+    <form id="loadDrawing" action="" method="post" hidden>
+      {% csrf_token %}
+      <input id="JSONLoadData" type="text" name="JSONData" value="{{ JSONData }}" />
+      <button id="load" type="submit" class="btn btn-warning btn-lg"></button>
+    </form>
+    {% endif %}
+  </div>
+
+  <div id="withCanvas">
+    <center>
+      <table class="tg" style="width: 100%;">
+        <thead>
+          <tr>
+            <th class="tg-wp8o">Área de Dibujo</th>
+            <th class="tg-wp8o">Área del modelo </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="tg-wp8o" style="width: 50%;">
+              <!-- -->
+              <svg id="canvas"
+                style="width: 480px ;height:480px; background:rgba(255,255,255,0.97); display:inline; border: solid black 1px"></svg>
+            </td>
+            <td class="tg-wp8o" style="width: 50%;">
+              <p style="color: blue;" id="msg">{{text}}</p>
+              <!-- <svg id="face_gen"
+                style="width: 480px ;height:480px;background:rgba(255,255,255,0.97); display:inline; border: solid black 1px"></svg> -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </center>
+
+  </div>
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+  <!-- Load React. -->
+  <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <!-- Load our React component. -->
+  <script src="{% static 'MainCanvas/javascript/reactComponents.js' %}" type="text/babel"></script>
+</body>
+
+</html>
