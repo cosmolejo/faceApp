@@ -19,7 +19,30 @@ document.addEventListener('ReactDOMLoaded', () => {
 
     //Socket
 
-    socket = new WebSocket("ws://localhost:8000/main/");
+    const socket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/main/'
+    );
+
+    // Faceretreaving function
+
+
+
+
+    socket.onmessage = function (e) {
+        image_style = "width: 480px ;height:480px;background:rgba(255,255,255,0.97); display:inline; border: solid black 1px"
+        var data = JSON.parse(e.data);
+        // const Imagen = (({ data }) => <img src={'data:image/jpeg;base64,${data}'}/>);
+        // ReactDOM.render(<Imagen data={data.image} />, document.getElementById('model_container'));
+        //console.log(data.image);
+        if (data.image != undefined) {
+            src = "data:image/png;base64, " + data.image;
+            document.getElementById('model_container').innerHTML = "<img  src='" + src + "' style= '" + image_style + "' />";
+
+        }
+    }
+
 
     // Saving function
 
@@ -66,6 +89,37 @@ document.addEventListener('ReactDOMLoaded', () => {
 
         }
     }
+
+    // modell calling function
+
+    function submit_model() {
+        var SVGDomElement = document.getElementById("canvas");
+
+        // var b64 = svg_to_base64(SVGDomElement);
+        var serializedSVG = new XMLSerializer().serializeToString(SVGDomElement);
+
+        var base64Data = window.btoa(serializedSVG);
+
+        var race = document.getElementById('race_combo').value
+        //console.log("data:image/svg+xml;base64," + base64Data);
+        socket.send(JSON.stringify({
+            "event": "SUBMIT",
+            "image": base64Data,
+            'race' : race,
+        }));
+
+
+    }
+
+
+    const selectElement = document.querySelector('#race_combo');
+
+    selectElement.addEventListener('change', (event) => {
+        submit_model();
+
+    });
+    
+
     // Initializing svg element
     var canvas = document.getElementById("canvas");
     svg = d3.select('#canvas');
@@ -80,8 +134,6 @@ document.addEventListener('ReactDOMLoaded', () => {
         // is the starting point, i.e., only one point
         drawPoint(mouseCoordinates[0], mouseCoordinates[1], false);
 
-        document.querySelector('#msg').innerText = '';
-
 
     });
     svg.on('touchstart', function () {
@@ -92,7 +144,6 @@ document.addEventListener('ReactDOMLoaded', () => {
         // false indicates not to be connected by line as this
         // is the starting point, i.e., only one point
         drawPoint(touchCoordinates[0][0], touchCoordinates[0][1], false);
-        document.querySelector('#msg').innerText = '';
 
     });
 
@@ -100,23 +151,21 @@ document.addEventListener('ReactDOMLoaded', () => {
     svg.on('mouseup', () => {
 
         isDrawing = false;
-        //console.log('mouse levantado');
-        //save_data();
-        //document.getElementById('model').click()
-        socket.onmessage = function (e) {
 
-            var data = JSON.parse(e.data);
-            document.querySelector('#msg').innerText = 'mouse up ' + data.timeValue;
-        }
-        var SVGDomElement = document.getElementById("canvas");
-        var serializedSVG = new XMLSerializer().serializeToString(SVGDomElement);
-        var base64Data = window.btoa(serializedSVG);
-        console.log("data:image/svg+xml;base64," + base64Data);
-        socket.send(JSON.stringify({
-            "event": "SUBMIT",
-            "image": base64Data
-        }));
-            
+        submit_model();
+
+        // var SVGDomElement = document.getElementById("canvas");
+
+        // // var b64 = svg_to_base64(SVGDomElement);
+        // var serializedSVG = new XMLSerializer().serializeToString(SVGDomElement);
+
+        // var base64Data = window.btoa(serializedSVG);
+        // //console.log("data:image/svg+xml;base64," + base64Data);
+        // socket.send(JSON.stringify({
+        //     "event": "SUBMIT",
+        //     "image": base64Data
+        // }));
+
     });
     svg.on('touchend', () => {
 
@@ -137,7 +186,6 @@ document.addEventListener('ReactDOMLoaded', () => {
         // trfue indicates line to be joined with the previous
         // point already saved in the points array
         drawPoint(mouseCoordinates[0], mouseCoordinates[1], true);
-        document.querySelector('#msg').innerText = '';
 
     });
     svg.on('touchmove', function () {
@@ -152,7 +200,6 @@ document.addEventListener('ReactDOMLoaded', () => {
         // trfue indicates line to be joined with the previous
         // point already saved in the points array
         drawPoint(touchCoordinates[0][0], touchCoordinates[0][1], true);
-        document.querySelector('#msg').innerText = '';
 
     });
 
@@ -394,38 +441,7 @@ document.addEventListener('ReactDOMLoaded', () => {
     document.getElementById('saveDrawingButton').onclick = function () {
 
         save_data();
-        // // Saving each point in JSON object
-        // for (let i = 0; i < points.length; i++)
-        // {
-        //       // Getting info of each point
-        //       let currentPoint = points[i]
-        //       let cx = currentPoint._groups['0']['0'].cx.animVal.value
-        //       let cy = currentPoint._groups['0']['0'].cy.animVal.value
-        //       let r = currentPoint._groups['0']['0'].r.animVal.value
-        //       let fillColor = currentPoint._groups['0']['0'].style.fill
-
-        //       // Saving the same inside JSON object's points array
-        //       savedData['points'].push({'x' : cx, 'y' : cy, 'r' : r, 'color' : fillColor})
-
-        // }
-
-        // // Saving each line in JSON object
-        // for (let i = 0; i < lines.length; i++)
-        // {
-        //     // Getting info of each line
-        //     let currentLine = lines[i]
-        //     let strokeWidth = currentLine._groups['0']['0'].attributes['stroke-width'].value
-        //     let strokeColor = currentLine._groups['0']['0'].style.stroke
-        //     let x1 = currentLine._groups['0']['0'].x1.animVal.value
-        //     let x2 = currentLine._groups['0']['0'].x2.animVal.value
-        //     let y1 = currentLine._groups['0']['0'].y1.animVal.value
-        //     let y2 = currentLine._groups['0']['0'].y2.animVal.value
-
-        //     // Saving the same inside JSON object's lines array
-        //     savedData['lines'].push({'x1' : x1, 'y1' : y1, 'x2' : x2, 'y2' : y2, 'strokeWidth'  :strokeWidth, 'strokeColor' : strokeColor})
-
-        // }
-
+       
         // Submitting JSON Data through POST form to server by clicking button
         document.getElementById('save').click()
 

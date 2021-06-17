@@ -8,9 +8,9 @@
 # ]
 
 
-from django.conf.urls import url
+from django.conf.urls import re_path
 from MainCanvas.consumers import CanvasConsumer
 
 websocket_urlpatterns = [
-    url('main/', CanvasConsumer.as_asgi()),
+    re_path(r'ws/main/$', CanvasConsumer.as_asgi()),
 ]

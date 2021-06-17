@@ -91,7 +91,8 @@
       </div>
     </div>
     <div id="buttonBar"></div>
-
+    <div id="raceSelector"></div>
+    
     <form id="saveDrawing" action="{% url 'saveDrawing' %}" method="post" hidden onsubmit="return submitDrawing()">
       {% csrf_token %}
       <input id="JSONData" type="text" name="JSONData" />
@@ -136,9 +137,7 @@
                 style="width: 480px ;height:480px; background:rgba(255,255,255,0.97); display:inline; border: solid black 1px"></svg>
             </td>
             <td class="tg-wp8o" style="width: 50%;">
-              <p style="color: blue;" id="msg">{{text}}</p>
-              <!-- <svg id="face_gen"
-                style="width: 480px ;height:480px;background:rgba(255,255,255,0.97); display:inline; border: solid black 1px"></svg> -->
+              <div id="model_container"></div>
             </td>
           </tr>
         </tbody>
@@ -146,7 +145,6 @@
     </center>
 
   </div>
-
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -1,7 +1,7 @@
 'use strict';
 
 // Defining new prototype method for string for capitalizing
-String.prototype.capitalize = function() {
+String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
@@ -9,7 +9,7 @@ String.prototype.capitalize = function() {
 // and color and eraser buttons
 const colorClassName = "colorClass"
 const colorName = "colorOption"
-const colors = ["black" ,"blue", "green", "red"]
+const colors = ["black", "blue", "green", "red"]
 const thicknessClassName = "thicknessClass"
 const thicknessName = "thicknessOption"
 const thicknesses = ['1', '2', '3', '4', '5', '6', '7']
@@ -17,21 +17,22 @@ const eraserClassName = "eraserClass"
 const eraserName = "eraserOption"
 const erasers = ["0", "1", "2", "3", "4", "5", "6", "7"]
 
+const races = ['Asian', 'Black', 'Indian',
+    'Latino', 'Middle Eastern', 'White']
+
 // Defining color class as a react component
-class ColorClass extends React.Component
-{
-    constructor(props)
-    {
+class ColorClass extends React.Component {
+    constructor(props) {
         // Constructing parent elements
         super(props);
 
         // Defining state
         this.state = {
-          color: this.props.color,
-          colorClassName:colorClassName,
-          colorName:colorName,
-          disabled:this.props.isDisabled,
-          isFirst:this.props.isFirst
+            color: this.props.color,
+            colorClassName: colorClassName,
+            colorName: colorName,
+            disabled: this.props.isDisabled,
+            isFirst: this.props.isFirst
         };
 
         // Binding handleChange method to this class
@@ -39,47 +40,41 @@ class ColorClass extends React.Component
     }
 
     // Function for handling change of color
-    handleChange(event)
-    {
-        this.setState({color: event.target.value});
+    handleChange(event) {
+        this.setState({ color: event.target.value });
     }
 
     // Function for rendering color button
-    render()
-    {
+    render() {
         // Not rendering active button if button is disabled
-        if (this.state.disabled === false)
-        {
+        if (this.state.disabled === false) {
             // Button not active/selected if not first
-            if (this.state.isFirst === false)
-            {
+            if (this.state.isFirst === false) {
                 return (
                     <label className="btn btn-warning">
                         {this.state.color}
-                        <input type="radio" className={this.state.colorClassName} style={{display:"none"}} name={this.state.colorName} value={this.state.color} />
+                        <input type="radio" className={this.state.colorClassName} style={{ display: "none" }} name={this.state.colorName} value={this.state.color} />
                     </label>
                 );
             }
             // Button selected if first button
-            else
-            {
+            else {
                 return (
                     <label className="btn btn-warning active">
                         {this.state.color}
-                        <input type="radio" className={this.state.colorClassName} style={{display:"none"}} name={this.state.colorName} value={this.state.color} defaultChecked/>
+                        <input type="radio" className={this.state.colorClassName} style={{ display: "none" }} name={this.state.colorName} value={this.state.color} defaultChecked />
                     </label>
                 );
             }
 
         }
         // Rendering disabled button
-        else
-        {
+        else {
             return (
-              <label className="btn btn-warning disabled" disabled>
-                  Color
-                  <input type="radio" name={this.state.colorName} />
-              </label>
+                <label className="btn btn-warning disabled" disabled>
+                    Color
+                    <input type="radio" name={this.state.colorName} />
+                </label>
             );
         }
     }
@@ -87,30 +82,28 @@ class ColorClass extends React.Component
 
 // Creating color buttons for each color using its react class
 const colorListItems = colors.map((color) =>
-  <ColorClass color = {color.capitalize()} isDisabled={false} isFirst={colors.indexOf(color) == 0}/>
+    <ColorClass color={color.capitalize()} isDisabled={false} isFirst={colors.indexOf(color) == 0} />
 );
 
 // Creating color buttons for disabled color heading button using its react class
-const disabledColorHeadingButton = <ColorClass color={""} isDisabled ={true} isFirst={false}/>;
+const disabledColorHeadingButton = <ColorClass color={""} isDisabled={true} isFirst={false} />;
 
 // Inserting disabledColorHeadingButton and colorListItems inside colorBar
 const colorBar = <div className="btn-group btn-group-toggle" data-toggle="buttons">{disabledColorHeadingButton}{colorListItems}</div>
 
 // Defining thickness class as a react component
-class ThicknessClass extends React.Component
-{
-    constructor(props)
-    {
+class ThicknessClass extends React.Component {
+    constructor(props) {
         // Constructing parent elements
         super(props);
 
         // Defining state
         this.state = {
-          thickness: this.props.thickness,
-          thicknessClassName:thicknessClassName,
-          thicknessName:thicknessName,
-          disabled:this.props.isDisabled,
-          isFirst:this.props.isFirst
+            thickness: this.props.thickness,
+            thicknessClassName: thicknessClassName,
+            thicknessName: thicknessName,
+            disabled: this.props.isDisabled,
+            isFirst: this.props.isFirst
         };
 
         // Binding handleChange method to this class
@@ -118,46 +111,40 @@ class ThicknessClass extends React.Component
     }
 
     // Function for handling change of thickness
-    handleChange(event)
-    {
-        this.setState({thickness: event.target.value});
+    handleChange(event) {
+        this.setState({ thickness: event.target.value });
     }
 
     // Function for rendering thickness button
-    render()
-    {
+    render() {
         // Not rendering active button if button is disabled
-        if (this.state.disabled === false)
-        {
+        if (this.state.disabled === false) {
             // Button not active/selected if not first
-            if (this.state.isFirst === false)
-            {
+            if (this.state.isFirst === false) {
                 return (
                     <label className="btn btn-warning">
                         {this.state.thickness}
-                        <input type="radio" className={this.state.thicknessClassName} style={{display:"none"}} name={this.state.thicknessName} value={this.state.thickness} />
+                        <input type="radio" className={this.state.thicknessClassName} style={{ display: "none" }} name={this.state.thicknessName} value={this.state.thickness} />
                     </label>
                 );
             }
             // Button selected if first button
-            else
-            {
+            else {
                 return (
                     <label className="btn btn-warning active">
                         {this.state.thickness}
-                        <input type="radio" className={this.state.thicknessClassName} style={{display:"none"}} name={this.state.thicknessName} value={this.state.thickness} defaultChecked/>
+                        <input type="radio" className={this.state.thicknessClassName} style={{ display: "none" }} name={this.state.thicknessName} value={this.state.thickness} defaultChecked />
                     </label>
                 );
             }
         }
         // Rendering disabled button
-        else
-        {
+        else {
             return (
-              <label className="btn btn-warning disabled" disabled>
-                  Thickness
-                  <input type="radio" name={this.state.thicknessName} />
-              </label>
+                <label className="btn btn-warning disabled" disabled>
+                    Thickness
+                    <input type="radio" name={this.state.thicknessName} />
+                </label>
             );
         }
     }
@@ -165,20 +152,18 @@ class ThicknessClass extends React.Component
 
 
 // Defining thickness class as a react component
-class EraserClass extends React.Component
-{
-    constructor(props)
-    {
+class EraserClass extends React.Component {
+    constructor(props) {
         // Constructing parent elements
         super(props);
 
         // Defining state
         this.state = {
-          thickness: this.props.thickness,
-          eraserClassName:eraserClassName,
-          eraserName:eraserName,
-          disabled:this.props.isDisabled,
-          isFirst:this.props.isFirst
+            thickness: this.props.thickness,
+            eraserClassName: eraserClassName,
+            eraserName: eraserName,
+            disabled: this.props.isDisabled,
+            isFirst: this.props.isFirst
         };
 
         // Binding handleChange method to this class
@@ -186,46 +171,40 @@ class EraserClass extends React.Component
     }
 
     // Function for handling change of thickness
-    handleChange(event)
-    {
-        this.setState({thickness: event.target.value});
+    handleChange(event) {
+        this.setState({ thickness: event.target.value });
     }
 
     // Function for rendering thickness button
-    render()
-    {
+    render() {
         // Not rendering active button if button is disabled
-        if (this.state.disabled === false)
-        {
+        if (this.state.disabled === false) {
             // Button not active/selected if not first
-            if (this.state.isFirst === false)
-            {
+            if (this.state.isFirst === false) {
                 return (
                     <label className="btn btn-warning">
                         {this.state.thickness}
-                        <input type="radio" className={this.state.eraserClassName} style={{display:"none"}} name={this.state.eraserName} value={this.state.thickness} />
+                        <input type="radio" className={this.state.eraserClassName} style={{ display: "none" }} name={this.state.eraserName} value={this.state.thickness} />
                     </label>
                 );
             }
             // Button selected if first button
-            else
-            {
+            else {
                 return (
                     <label className="btn btn-warning active">
                         {this.state.thickness}
-                        <input type="radio" className={this.state.eraserClassName} style={{display:"none"}} name={this.state.eraserName} value={this.state.thickness} defaultChecked/>
+                        <input type="radio" className={this.state.eraserClassName} style={{ display: "none" }} name={this.state.eraserName} value={this.state.thickness} defaultChecked />
                     </label>
                 );
             }
         }
         // Rendering disabled button
-        else
-        {
+        else {
             return (
-              <label className="btn btn-warning disabled" disabled>
-                  Eraser
-                  <input type="radio" name={this.state.eraserName} />
-              </label>
+                <label className="btn btn-warning disabled" disabled>
+                    Eraser
+                    <input type="radio" name={this.state.eraserName} />
+                </label>
             );
         }
     }
@@ -237,11 +216,11 @@ class EraserClass extends React.Component
 
 // Creating eraser buttons for each eraser thickness using its react class
 const eraserListItems = erasers.map((eraser) =>
-  <EraserClass thickness = {eraser} isDisabled={false} isFirst={erasers.indexOf(eraser) == 0}/>
+    <EraserClass thickness={eraser} isDisabled={false} isFirst={erasers.indexOf(eraser) == 0} />
 );
 
 // Creating eraser buttons for disabled color heading button using its react class
-const disabledEraserHeadingButton = <EraserClass thickness={""} isDisabled ={true} isFirst={false}/>;
+const disabledEraserHeadingButton = <EraserClass thickness={""} isDisabled={true} isFirst={false} />;
 
 // Inserting disabledEraserHeadingButton and eraserListItems inside eraserBar
 const eraserBar = <div className="btn-group btn-group-toggle" data-toggle="buttons">{disabledEraserHeadingButton}{eraserListItems}</div>
@@ -250,34 +229,31 @@ const eraserBar = <div className="btn-group btn-group-toggle" data-toggle="butto
 
 // Creating thickness buttons for each color using its react class
 const thicknessListItems = thicknesses.map((thickness) =>
-  <ThicknessClass thickness = {thickness} isDisabled={false} isFirst={thicknesses.indexOf(thickness) == 0}/>
+    <ThicknessClass thickness={thickness} isDisabled={false} isFirst={thicknesses.indexOf(thickness) == 0} />
 );
 
 // Creating thickness buttons for disabled color heading button using its react class
-const disabledThicknessHeadingButton = <ThicknessClass thickness={""} isDisabled ={true} isFirst={false}/>;
+const disabledThicknessHeadingButton = <ThicknessClass thickness={""} isDisabled={true} isFirst={false} />;
 
 // Inserting disabledThicknessHeadingButton and thicknessListItems inside thicknessBar
 const thicknessBar = <div className="btn-group btn-group-toggle" data-toggle="buttons">{disabledThicknessHeadingButton}{thicknessListItems}</div>
 
 // Defining button class as a react component
-class ButtonClass extends React.Component
-{
-    constructor(props)
-    {
+class ButtonClass extends React.Component {
+    constructor(props) {
         // Constructing parent elements
         super(props)
 
         // Defining state
         this.state = {
-          id:this.props.id,
-          heading:this.props.heading
+            id: this.props.id,
+            heading: this.props.heading
         }
     }
 
     // Function for rendering button
-    render()
-    {
-        return(
+    render() {
+        return (
             <button type="button" id={this.state.id} className="btn btn-warning" >{this.state.heading}</button>
         );
     }
@@ -285,16 +261,58 @@ class ButtonClass extends React.Component
 
 // Initializing variables required for rendering buttons
 // with appropriate id and heading
-const buttons = [{id:"eraseButton", heading:"Erase All"},
-                 {id:"undoButton", heading:"Undo"},
-                 {id:"redoButton", heading:"Redo"},
-                 {id:"saveDrawingButton", heading:"Save Drawing"}
-                ]
+const buttons = [{ id: "eraseButton", heading: "Erase All" },
+{ id: "undoButton", heading: "Undo" },
+{ id: "redoButton", heading: "Redo" },
+{ id: "saveDrawingButton", heading: "Save Drawing" }
+]
 
 // Creating buttons for each function button using its react class
 const buttonListItems = buttons.map((button) =>
-  <ButtonClass id = {button.id} heading={button.heading} />
+    <ButtonClass id={button.id} heading={button.heading} />
 );
+
+
+
+class RaceForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: 'Latino' };
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({ value: event.target.value });
+    }
+    // handleSubmit(event) {
+    //     alert('Your favorite flavor is: ' + this.state.value);
+    //     event.preventDefault();
+    // }
+
+    render() {
+        return (
+            <form onChange={this.handleChange}>
+                <label>
+                    Choose the Race :  
+                    <select id='race_combo' value={this.state.value} onChange={this.handleChange}>
+                        <option value="Asian">Asian</option>
+                        <option value="Black">Black</option>
+                        <option value="Indian">Indian</option>
+                        <option value="Latino">Latino</option>
+                        <option value="Middle Eastern">Middle Eastern</option>
+                        <option value="White">White</option>
+
+                    </select>
+                </label>
+            </form>
+        );
+    }
+}
+
+
+
+
+
 
 // Rendering thickness, color and eraser bar
 ReactDOM.render(
@@ -307,6 +325,13 @@ ReactDOM.render(
     <div>{buttonListItems}</div>,
     document.getElementById('buttonBar')
 );
+
+
+ReactDOM.render(
+    <RaceForm />,
+    document.getElementById('raceSelector')
+);
+
 
 // Defining a new custom event for draw.js to
 // start assigning functions to all thickness,
