@@ -11,6 +11,7 @@ document.addEventListener('ReactDOMLoaded', () => {
     let removedLines = []
     let svg = null;
 
+    let delay = 0
     // JSON Data to be populated on saving drawing
     var savedData = {
         'points': [],
@@ -102,11 +103,14 @@ document.addEventListener('ReactDOMLoaded', () => {
 
         var race = document.getElementById('race_combo').value
         //console.log("data:image/svg+xml;base64," + base64Data);
-        socket.send(JSON.stringify({
-            "event": "SUBMIT",
-            "image": base64Data,
-            'race' : race,
-        }));
+        if (delay >= 5){
+            socket.send(JSON.stringify({
+                "event": "SUBMIT",
+                "image": base64Data,
+                'race' : race,
+            }));
+        }
+        
 
 
     }
@@ -151,7 +155,7 @@ document.addEventListener('ReactDOMLoaded', () => {
     svg.on('mouseup', () => {
 
         isDrawing = false;
-
+        delay++;
         submit_model();
 
         // var SVGDomElement = document.getElementById("canvas");
